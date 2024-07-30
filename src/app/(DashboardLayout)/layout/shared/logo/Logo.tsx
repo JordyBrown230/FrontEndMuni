@@ -11,7 +11,7 @@ const LinkStyled = styled(Link)(() => ({
 
 const Logo = () => {
   return (
-    <LinkStyled href="/">
+    <LinkStyled href="/municipalidad">
       <Image src="/images/logos/logo_La_Cruz_2.png" alt="logo" height={70} width={174} priority />
     </LinkStyled>
   );
