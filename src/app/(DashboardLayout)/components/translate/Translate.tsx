@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
 
-const Translate: React.FC = () => {
+const Translate = () => {
     useEffect(() => {
         // Inject the settings script
         const scriptSettings = document.createElement('script');
         scriptSettings.innerHTML = `
             window.gtranslateSettings = {
                 "default_language": "es",
-                "languages": ["es","en", "fr", "de", "it"],
+                "native_language_names":"true",
+                "languages": ["es", "fr", "de", "it","en"],
                 "wrapper_selector": ".gtranslate_wrapper",
                 "switcher_horizontal_position": "right",
                 "float_switcher_open_direction": "bottom"
