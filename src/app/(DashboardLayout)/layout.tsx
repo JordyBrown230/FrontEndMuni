@@ -3,6 +3,7 @@ import { styled, Container, Box } from "@mui/material";
 import React, { useState } from "react";
 import Header from "@/app/(DashboardLayout)/layout/header/Header";
 import Sidebar from "@/app/(DashboardLayout)/layout/sidebar/Sidebar";
+import Translate from "./components/translate/Translate";
 
 
 const MainWrapper = styled("div")(() => ({
@@ -54,6 +55,7 @@ export default function RootLayout({
         {/* ------------------------------------------- */}
         {/* PageContent */}
         {/* ------------------------------------------- */}
+        <Translate></Translate>
         <Container
           sx={{
             paddingTop: "20px",

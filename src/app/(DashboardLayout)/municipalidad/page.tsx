@@ -1,10 +1,12 @@
 'use client';
-import { Typography, Grid, Card, CardContent, CardMedia, Box} from '@mui/material';
+import { Typography, Grid, Card, CardContent, CardMedia, Box } from '@mui/material';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
 import { useEffect } from 'react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import Visitantes from '../components/visitantes/Visitantes';
+import Translate from '../components/translate/Translate';
 
 const Municipalidad = () => {
     useEffect(() => {
@@ -13,6 +15,9 @@ const Municipalidad = () => {
 
     return (
         <PageContainer title="InformacionGCanton" description="Una pagina con información general del cantón">
+            <Box textAlign="left" mb={4}>
+                <Visitantes></Visitantes>
+            </Box>
             <DashboardCard title="Información general del cantón">
                 <Box>
                     <Box textAlign="center" mb={4}>
