@@ -17,6 +17,19 @@ const Sidebar = ({
 
   const sidebarWidth = "270px";
 
+  const sidebarBg = `linear-gradient(rgba(255, 255, 255), rgba(111, 183, 255, 0.1)),
+                    url('/images/backgrounds/IMG_20220407_145639625_HDR.jpg')`;
+
+  const sidebarStyles = {
+    background: sidebarBg,
+    backgroundSize: 'cover', // Ajusta el tamaño de la imagen
+    backgroundPosition: 'center', // Centra la imagen en el contenedor
+    backgroundRepeat: 'no-repeat', // Evita que la imagen se repita
+    borderTopRightRadius: "20px", // Ajuste general para bordes redondeados
+    backgroundAttachment: "fixed",
+    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.9)", // Agrega una sombra sutil
+  };
+
   if (lgUp) {
     return (
       <Box
@@ -25,38 +38,30 @@ const Sidebar = ({
           flexShrink: 0,
         }}
       >
-        {/* ------------------------------------------- */}
         {/* Sidebar for desktop */}
-        {/* ------------------------------------------- */}
         <Drawer
           anchor="left"
           open={isSidebarOpen}
           variant="permanent"
           PaperProps={{
             sx: {
-              width: sidebarWidth,
+              width: "300.5px",
               boxSizing: "border-box",
+              ...sidebarStyles,
             },
           }}
         >
-          {/* ------------------------------------------- */}
-          {/* Sidebar Box */}
-          {/* ------------------------------------------- */}
           <Box
             sx={{
               height: "100%",
             }}
           >
-            {/* ------------------------------------------- */}
             {/* Logo */}
-            {/* ------------------------------------------- */}
-            <Box px={3}>
+            <Box px={0.0} py={1}>
               <Logo />
             </Box>
+            {/* Sidebar Items */}
             <Box>
-              {/* ------------------------------------------- */}
-              {/* Sidebar Items */}
-              {/* ------------------------------------------- */}
               <SidebarItems />
             </Box>
           </Box>
@@ -74,19 +79,15 @@ const Sidebar = ({
       PaperProps={{
         sx: {
           width: sidebarWidth,
-          boxShadow: (theme) => theme.shadows[8],
+          ...sidebarStyles,
         },
       }}
     >
-      {/* ------------------------------------------- */}
       {/* Logo */}
-      {/* ------------------------------------------- */}
-      <Box px={2}>
+      <Box px={0.0} py={0.0}>
         <Logo />
       </Box>
-      {/* ------------------------------------------- */}
       {/* Sidebar For Mobile */}
-      {/* ------------------------------------------- */}
       <SidebarItems />
     </Drawer>
   );
