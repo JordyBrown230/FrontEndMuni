@@ -3,7 +3,7 @@ import { styled } from "@mui/material";
 import Image from "next/image";
 
 const LinkStyled = styled(Link)(() => ({
-  height: "200px",
+  height: "125px",
   width: "300px",
   overflow: "hidden",
   display: "block",
