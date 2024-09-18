@@ -50,7 +50,7 @@ const Header = ({ toggleMobileSidebar }: ItemType) => {
           aria-controls="msgs-menu"
           aria-haspopup="true"
           sx={{
-            marginLeft: 'auto', // Mueve el ícono de notificaciones a la derecha
+            marginLeft: 'auto', 
           }}
         >
           <Badge variant="dot" color="primary">

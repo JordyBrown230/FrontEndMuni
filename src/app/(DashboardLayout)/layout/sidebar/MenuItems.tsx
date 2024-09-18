@@ -24,31 +24,37 @@ const Menuitems = [
     id: uniqueId(),
     title: "Atracciones Turísticas",
     icon: IconMap,
-    href: "/crud-atraccionesTuristicas",
+    href: "/m-atraccionesTuristicas",
   },
   {
     id: uniqueId(),
     title: "Transportes",
     icon: IconBus,
-    href: "/crud-transportes",
+    href: "/m-transportes",
   },
   {
     id: uniqueId(),
     title: "Multimedia",
     icon: IconVideo,
-    href: "/crud-materiaMulti",
+    href: "/m-materiaMulti",
   },
   {
     id: uniqueId(),
     title: "Información Legal",
     icon: IconForms,
-    href: "/crud-InfoLegalRegulatoria",
+    href: "/m-InfoLegalRegulatoria",
+  },
+  {
+    id: uniqueId(),
+    title: "Accesibilidad",
+    icon: IconUserEdit,
+    href: "/m-EducacionTuristica",
   },
   {
     id: uniqueId(),
     title: "Educación Turística",
     icon: IconUserEdit,
-    href: "/crud-EducacionTuristica",
+    href: "/m-EducacionTuristica",
   }
 ];
 
