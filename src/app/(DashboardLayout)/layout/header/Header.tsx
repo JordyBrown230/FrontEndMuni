@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, AppBar, Toolbar, styled, IconButton, Badge } from '@mui/material';
 import PropTypes from 'prop-types';
 import { IconBellRinging, IconMenu } from '@tabler/icons-react';
+import Visitantes from '../../components/visitantes/Visitantes';
 
 interface ItemType {
   toggleMobileSidebar: (event: React.MouseEvent<HTMLElement>) => void;
@@ -27,6 +28,7 @@ const Header = ({ toggleMobileSidebar }: ItemType) => {
   return (
     <AppBarStyled position="sticky" color="default">
       <ToolbarStyled>
+      <Visitantes></Visitantes>
         <IconButton
           color="inherit"
           aria-label="menu"
@@ -50,7 +52,7 @@ const Header = ({ toggleMobileSidebar }: ItemType) => {
           aria-controls="msgs-menu"
           aria-haspopup="true"
           sx={{
-            marginLeft: 'auto', 
+            marginLeft: 'auto',
           }}
         >
           <Badge variant="dot" color="primary">
