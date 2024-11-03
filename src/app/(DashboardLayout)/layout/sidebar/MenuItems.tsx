@@ -5,6 +5,11 @@ import {
   IconMap,
   IconUserEdit,
   IconVideo,
+  IconInfoCircle,
+  IconCloud,
+  IconBuildingStore,
+  IconTools,
+  IconShieldCheck,
 } from "@tabler/icons-react";
 
 import { uniqueId } from "lodash";
@@ -55,7 +60,30 @@ const Menuitems = [
     title: "Educación Turística",
     icon: IconUserEdit,
     href: "/m-EducacionTuristica",
-  }
+  },
+  {
+    title: "Clima",
+    icon: IconCloud,
+    href: "/clima",
+  },
+  {
+    id: uniqueId(),
+    title: "Establecimientos",
+    icon: IconBuildingStore,
+    href: "/establecimientos",
+  },
+  {
+    id: uniqueId(),
+    title: "Servicios básicos",
+    icon: IconTools, 
+    href: "/servicios-basicos",
+  },
+  {
+    id: uniqueId(),
+    title: "Servicios seguridad",
+    icon: IconShieldCheck, 
+    href: "/servicios-seguridad",
+  },
 ];
 
 export default Menuitems;

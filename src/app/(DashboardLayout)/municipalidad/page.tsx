@@ -50,7 +50,7 @@ const Municipalidad = () => {
                                     component="img"
                                     alt="Geografía del Cantón"
                                     height="400"
-                                    image="https://www.researchgate.net/publication/356003571/figure/fig1/AS:1088065573519362@1636426456751/Ubicacion-de-las-principales-comunidades-de-la-municipalidad-La-Cruz-Guanacaste-Costa.ppm"
+                                    image="https://www.lacruzguanacaste.com/wp-content/uploads/2023/06/MapaLCruz-2-scaled.jpg"
                                     title="Geografía del Cantón"
                                 />
                                 <CardContent>
