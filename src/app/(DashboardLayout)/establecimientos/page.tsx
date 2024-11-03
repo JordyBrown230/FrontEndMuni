@@ -9,6 +9,10 @@ import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { styled } from '@mui/system';
+import TravelExploreIcon from '@mui/icons-material/TravelExplore';
+import { Tooltip } from '@mui/material';
+import { IconBrandWaze } from '@tabler/icons-react';
+import RoomIcon from '@mui/icons-material/Room';
 
 const CustomCard = styled(Card)({
   borderRadius: '16px',
@@ -103,7 +107,7 @@ const EstablecimientosList = () => {
   }
 
   return (
-    <Box sx={{ padding: '20px', minHeight: '100vh', backgroundColor: '#f7f8fc',borderRadius:'10px' }}>
+    <Box sx={{ padding: '20px', minHeight: '100vh', backgroundColor: '#f7f8fc', borderRadius: '10px' }}>
       <Typography variant="h3" align="center" gutterBottom sx={{ fontWeight: 'bold', color: '#333' }}>
         Establecimientos Turísticos
       </Typography>
@@ -187,6 +191,48 @@ const EstablecimientosList = () => {
                     Correo: {establecimiento.propietario?.correo || 'N/A'}
                   </Typography>
                 </Collapse>
+                <Box display="flex" gap={1} mt={2}>
+                  {/* Icono de Google Maps */}
+                  {establecimiento.urlGoogleMaps && (
+                    <Tooltip title="Ver en Google Maps">
+                      <IconButton
+                        color="primary"
+                        component="a"
+                        href={establecimiento.urlGoogleMaps}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <RoomIcon />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+
+                  {establecimiento.urlWaze && (
+                    <Tooltip title="Ver en Waze">
+                      <IconButton
+                        color="primary"
+                        component="a"
+                        href={establecimiento.urlWaze}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <IconBrandWaze />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+
+                  {/* Icono de Exploración */}
+                  <Tooltip title="Explorar su website">
+                    <IconButton
+                      color="primary"
+                      component="a"
+                      href={establecimiento.website}
+                      >
+                      <TravelExploreIcon />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+
               </CardContent>
             </CustomCard>
           </Grid>

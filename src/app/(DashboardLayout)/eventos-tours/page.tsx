@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, Typography, Grid, Box, CircularProgress, IconButton, Modal, Button, Collapse, Tooltip } from '@mui/material';
-import { getServiciosSeguridad, ServiciosSeguridad } from '@/services/serviciosseguridad.service';
+import { getEventosTours, EventoTour } from '@/services/eventotour.service';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
@@ -22,21 +22,21 @@ const CustomCard = styled(Card)({
     },
 });
 
-const ServiciosSeguridadList = () => {
-    const [serviciosSeguridad, setServiciosSeguridad] = useState<ServiciosSeguridad[]>([]);
+const EventosToursList = () => {
+    const [eventosTours, setEventosTours] = useState<EventoTour[]>([]);
     const [loading, setLoading] = useState(true);
     const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
     const [modalOpen, setModalOpen] = useState(false);
-    const [currentServicio, setCurrentServicio] = useState<ServiciosSeguridad | null>(null);
+    const [currentEvento, setCurrentEvento] = useState<EventoTour | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const data = await getServiciosSeguridad();
-                setServiciosSeguridad(data);
+                const data = await getEventosTours();
+                setEventosTours(data);
                 setLoading(false);
             } catch (error) {
-                console.error("Error fetching servicios de seguridad:", error);
+                console.error("Error fetching eventos/tours:", error);
                 setLoading(false);
             }
         };
@@ -48,14 +48,14 @@ const ServiciosSeguridadList = () => {
         setExpandedIndex(expandedIndex === index ? null : index);
     };
 
-    const openImageModal = (servicio: ServiciosSeguridad) => {
-        setCurrentServicio(servicio);
+    const openImageModal = (evento: EventoTour) => {
+        setCurrentEvento(evento);
         setModalOpen(true);
     };
 
     const closeModal = () => {
         setModalOpen(false);
-        setCurrentServicio(null);
+        setCurrentEvento(null);
     };
 
     if (loading) {
@@ -69,30 +69,29 @@ const ServiciosSeguridadList = () => {
     return (
         <Box sx={{ padding: '20px', minHeight: '100vh', backgroundColor: '#f7f8fc', borderRadius: '10px' }}>
             <Typography variant="h3" align="center" gutterBottom sx={{ fontWeight: 'bold', color: '#333' }}>
-                Servicios de Seguridad
+                Eventos y Tours
             </Typography>
 
             <Grid container spacing={4}>
-                {serviciosSeguridad.map((servicio, idx) => (
-                    <Grid item xs={12} sm={6} md={4} key={servicio.idServicioSeguridad}>
+                {eventosTours.map((evento, idx) => (
+                    <Grid item xs={12} sm={6} md={4} key={evento.idEventoTour}>
                         <CustomCard>
                             <Box sx={{ position: 'relative', overflow: 'hidden', height: 200 }}>
-                                {servicio.foto ? (
+                                {evento.fotosEventoTour && evento.fotosEventoTour.length > 0 ? (
                                     <img
-                                        src={`data:image/jpeg;base64,${Buffer.from(servicio.foto).toString('base64')}`}
-                                        alt="Servicio de Seguridad"
+                                        src={`data:image/jpeg;base64,${Buffer.from(evento.fotosEventoTour[0].foto).toString('base64')}`}
+                                        alt="Evento o Tour"
                                         style={{ width: '100%', height: '100%', objectFit: 'cover', cursor: 'pointer' }}
-                                        onClick={() => openImageModal(servicio)}
+                                        onClick={() => openImageModal(evento)}
                                     />
                                 ) : (
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
-                                            backgroundColor: '#e0e0e0',
-                                            height: '100%',
-                                        }}
+                                    <Box sx={{
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        backgroundColor: '#e0e0e0',
+                                        height: '100%',
+                                    }}
                                     >
                                         <Typography variant="body2" color="textSecondary">
                                             No hay fotos disponibles
@@ -102,10 +101,10 @@ const ServiciosSeguridadList = () => {
                             </Box>
                             <CardContent>
                                 <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 1 }}>
-                                    {servicio.nombre}
+                                    {evento.nombre}
                                 </Typography>
                                 <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
-                                    {servicio.descripcion ? servicio.descripcion : 'Descripción no disponible.'}
+                                    {evento.descripcion ? evento.descripcion : 'Descripción no disponible.'}
                                 </Typography>
                                 <Box display="flex" justifyContent="flex-end" mt={2}>
                                     <Button
@@ -119,22 +118,46 @@ const ServiciosSeguridadList = () => {
 
                                 <Collapse in={expandedIndex === idx} timeout="auto" unmountOnExit>
                                     <Typography variant="body1" mt={2}>
-                                        Dirección: {servicio.direccion}
+                                        Ubicación: {evento.ubicacion}
                                     </Typography>
                                     <Typography variant="body1" mt={1}>
-                                        Teléfono: {servicio.telefono || 'N/A'}
+                                        Fecha de Inicio: {new Date(evento.fechaInicio).toLocaleDateString()}
                                     </Typography>
+                                    {evento.fechaFin && (
+                                        <Typography variant="body1" mt={1}>
+                                            Fecha de Fin: {new Date(evento.fechaFin).toLocaleDateString()}
+                                        </Typography>
+                                    )}
                                     <Typography variant="body1" mt={1}>
-                                        Horario: {servicio.horario || 'N/A'}
+                                        Hora de Inicio: {evento.horaInicio}
+                                    </Typography>
+                                    {evento.horaFin && (
+                                        <Typography variant="body1" mt={1}>
+                                            Hora de Fin: {evento.horaFin}
+                                        </Typography>
+                                    )}
+                                    {evento.precio && (
+                                        <Typography variant="body1" mt={1}>
+                                            Precio: ${Number(evento.precio).toFixed(2)}
+                                        </Typography>
+                                    )}
+                                    {evento.capacidadMaxima && (
+                                        <Typography variant="body1" mt={1}>
+                                            Capacidad Máxima: {evento.capacidadMaxima}
+                                        </Typography>
+                                    )}
+                                    <Typography variant="body1" mt={1}>
+                                        Organizador: {evento.organizador || 'No especificado'}
                                     </Typography>
                                 </Collapse>
+
                                 <Box display="flex" gap={1} mt={2}>
-                                    {servicio.urlGoogleMaps && (
+                                    {evento.urlGoogleMaps && (
                                         <Tooltip title="Ver en Google Maps">
                                             <IconButton
                                                 color="primary"
                                                 component="a"
-                                                href={servicio.urlGoogleMaps}
+                                                href={evento.urlGoogleMaps}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                             >
@@ -142,13 +165,12 @@ const ServiciosSeguridadList = () => {
                                             </IconButton>
                                         </Tooltip>
                                     )}
-
-                                    {servicio.urlWaze && (
+                                    {evento && (
                                         <Tooltip title="Ver en Waze">
                                             <IconButton
                                                 color="primary"
                                                 component="a"
-                                                href={servicio.urlWaze}
+                                                href={evento.urlWaze}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                             >
@@ -161,7 +183,7 @@ const ServiciosSeguridadList = () => {
                                         <IconButton
                                             color="primary"
                                             component="a"
-                                            href={servicio.website}
+                                            href={evento.website}
                                         >
                                             <TravelExploreIcon />
                                         </IconButton>
@@ -174,25 +196,24 @@ const ServiciosSeguridadList = () => {
             </Grid>
 
             <Modal open={modalOpen} onClose={closeModal}>
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        bgcolor: 'background.paper',
-                        borderRadius: '8px',
-                        boxShadow: 24,
-                        p: 2,
-                        width: '80%',
-                        maxWidth: '600px',
-                        textAlign: 'center',
-                    }}
+                <Box sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    bgcolor: 'background.paper',
+                    borderRadius: '8px',
+                    boxShadow: 24,
+                    p: 2,
+                    width: '80%',
+                    maxWidth: '600px',
+                    textAlign: 'center',
+                }}
                 >
-                    {currentServicio && currentServicio.foto && (
+                    {currentEvento && currentEvento.fotosEventoTour && currentEvento.fotosEventoTour.length > 0 && (
                         <img
-                            src={`data:image/jpeg;base64,${Buffer.from(currentServicio.foto).toString('base64')}`}
-                            alt="Servicio de Seguridad grande"
+                            src={`data:image/jpeg;base64,${Buffer.from(currentEvento.fotosEventoTour[0].foto).toString('base64')}`}
+                            alt="Evento o Tour grande"
                             style={{ width: '100%', height: 'auto', borderRadius: '8px', objectFit: 'cover' }}
                         />
                     )}
@@ -208,4 +229,4 @@ const ServiciosSeguridadList = () => {
     );
 };
 
-export default ServiciosSeguridadList;
+export default EventosToursList;

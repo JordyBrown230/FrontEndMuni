@@ -1,12 +1,15 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Card, CardContent, Typography, Grid, Box, CircularProgress, IconButton, Modal, Button, Collapse } from '@mui/material';
+import { Card, CardContent, Typography, Grid, Box, CircularProgress, IconButton, Modal, Button, Collapse, Tooltip } from '@mui/material';
 import { getServiciosBasicos, ServicioBasico } from '@/services/serviciosbasicos.service';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { styled } from '@mui/system';
+import RoomIcon from '@mui/icons-material/Room';
+import { IconBrandWaze } from '@tabler/icons-react';
+import TravelExploreIcon from '@mui/icons-material/TravelExplore';
 
 const CustomCard = styled(Card)({
     borderRadius: '16px',
@@ -125,6 +128,45 @@ const ServiciosBasicosList = () => {
                                         Horario: {servicio.horario || 'N/A'}
                                     </Typography>
                                 </Collapse>
+                                <Box display="flex" gap={1} mt={2}>
+                                    {servicio.urlGoogleMaps && (
+                                        <Tooltip title="Ver en Google Maps">
+                                            <IconButton
+                                                color="primary"
+                                                component="a"
+                                                href={servicio.urlGoogleMaps}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                <RoomIcon />
+                                            </IconButton>
+                                        </Tooltip>
+                                    )}
+
+                                    {servicio.urlWaze && (
+                                        <Tooltip title="Ver en Waze">
+                                            <IconButton
+                                                color="primary"
+                                                component="a"
+                                                href={servicio.urlWaze}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                <IconBrandWaze />
+                                            </IconButton>
+                                        </Tooltip>
+                                    )}
+
+                                    <Tooltip title="Explorar su website">
+                                        <IconButton
+                                            color="primary"
+                                            component="a"
+                                            href={servicio.website}
+                                        >
+                                            <TravelExploreIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                </Box>
                             </CardContent>
                         </CustomCard>
                     </Grid>

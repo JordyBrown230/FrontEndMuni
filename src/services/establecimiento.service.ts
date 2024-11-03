@@ -1,6 +1,5 @@
 import axiosApi from './api.service';
 
-// Definición de la interfaz para los datos de establecimiento
 export interface Foto {
   idFoto: number;
   foto: string;
@@ -23,12 +22,15 @@ export interface Establecimiento {
   nombre: string;
   direccion: string;
   descripcion: string;
+  telefono: string;
+  urlWaze?: string;
+  urlGoogleMaps?: string;
+  website?: string;
   propietario: Propietario;
   categoria: Categoria;
   fotosEstablecimiento: Foto[];
 }
 
-// Función para obtener todos los establecimientos
 export const getEstablecimientos = async (): Promise<Establecimiento[]> => {
   try {
     const response = await axiosApi.get<Establecimiento[]>('/establecimientos');
