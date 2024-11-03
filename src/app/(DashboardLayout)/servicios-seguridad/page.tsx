@@ -156,16 +156,17 @@ const ServiciosSeguridadList = () => {
                                             </IconButton>
                                         </Tooltip>
                                     )}
-
-                                    <Tooltip title="Explorar su website">
-                                        <IconButton
-                                            color="primary"
-                                            component="a"
-                                            href={servicio.website}
-                                        >
-                                            <TravelExploreIcon />
-                                        </IconButton>
-                                    </Tooltip>
+                                    {servicio.website && (
+                                        <Tooltip title="Explorar su website">
+                                            <IconButton
+                                                color="primary"
+                                                component="a"
+                                                href={servicio.website}
+                                            >
+                                                <TravelExploreIcon />
+                                            </IconButton>
+                                        </Tooltip>
+                                    )}
                                 </Box>
                             </CardContent>
                         </CustomCard>
