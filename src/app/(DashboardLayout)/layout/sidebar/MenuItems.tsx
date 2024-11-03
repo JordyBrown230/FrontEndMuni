@@ -21,12 +21,6 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
-    title: "Home",
-    icon: IconHome,
-    href: "/municipalidad",
-  },
-  {
-    id: uniqueId(),
     title: "Atracciones Turísticas",
     icon: IconMap,
     href: "/m-atraccionesTuristicas",

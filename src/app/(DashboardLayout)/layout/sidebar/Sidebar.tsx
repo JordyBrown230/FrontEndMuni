@@ -45,7 +45,7 @@ const Sidebar = ({
           variant="permanent"
           PaperProps={{
             sx: {
-              width: "300.5px",
+              width: "320.5px",
               boxSizing: "border-box",
               ...sidebarStyles,
             },
