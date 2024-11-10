@@ -15,7 +15,7 @@ const Sidebar = ({
 }: ItemType) => {
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("lg"));
 
-  const sidebarWidth = "312px";
+  const sidebarWidth = "310px";
 
   const sidebarBg = `linear-gradient(rgba(255, 255, 255), rgba(111, 183, 255, 0.1)),
                     url('/images/backgrounds/IMG_20220407_145639625_HDR.jpg')`;
