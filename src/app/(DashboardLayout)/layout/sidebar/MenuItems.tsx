@@ -10,6 +10,9 @@ import {
   IconBuildingStore,
   IconTools,
   IconShieldCheck,
+  IconAlertOctagon,
+  IconBone,
+  IconPlane,
 } from "@tabler/icons-react";
 
 import { uniqueId } from "lodash";
@@ -45,15 +48,27 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
-    title: "Accesibilidad",
+    title: "Educación Turística",
     icon: IconUserEdit,
     href: "/m-EducacionTuristica",
   },
   {
     id: uniqueId(),
-    title: "Educación Turística",
-    icon: IconUserEdit,
-    href: "/m-EducacionTuristica",
+    title: "Zonas de Riesgo",
+    icon: IconAlertOctagon,
+    href: "/m-zonasriesgo",
+  },
+  {
+    id: uniqueId(),
+    title: "Sitios Arqueológicos",
+    icon: IconBone,
+    href: "/m-sitiosarqueologicos",
+  },
+  {
+    id: uniqueId(),
+    title: "Destino Turístico",
+    icon: IconPlane,
+    href: "/m-guiaViaje",
   },
   {
     title: "Clima",
