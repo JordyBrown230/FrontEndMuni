@@ -13,6 +13,9 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Importa el estilo de Quill
 import { Close as CloseIcon } from '@mui/icons-material';
 
+import TravelExploreIcon from '@mui/icons-material/TravelExplore';
+import { Tooltip } from '@mui/material';
+
 // Interfaz de la información legal y regulatoria
 interface LegalInfo {
     id: number;
@@ -110,16 +113,17 @@ const Municipalidad = () => {
                                         />
                                         {info.website && (
                                             <Box mt={2}>
-                                                <Button
-                                                    component={Link}
-                                                    href={info.website}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    variant="outlined"
-                                                    startIcon={<LaunchIcon />}
+                                                
+                                                <Tooltip title="Explorar su website">
+                                                <Button      
+                                                   component={Link}
+                                                   href={info.website}
+                                                   target="_blank"
+                                                   rel="noopener noreferrer"
                                                 >
-                                                    Sitio Web
+                                                    <TravelExploreIcon />
                                                 </Button>
+                                            </Tooltip>
                                             </Box>
                                         )}
                                         {info.document_files && info.document_files.length > 0 && (

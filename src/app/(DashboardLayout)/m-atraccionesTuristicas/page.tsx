@@ -16,6 +16,11 @@ import { Image as ImageIcon } from '@mui/icons-material';
 import { Accordion, AccordionSummary, AccordionDetails, FormControlLabel, Checkbox } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
+import TravelExploreIcon from '@mui/icons-material/TravelExplore';
+import { Tooltip } from '@mui/material';
+import { IconBrandWaze } from '@tabler/icons-react';
+import RoomIcon from '@mui/icons-material/Room';
+
 interface Attraction {
     attraction_id: number;
     name: string;
@@ -56,7 +61,7 @@ interface Props {
 }
 
 const Municipalidad: React.FC<Props> = ({ attraction }) => {
-    const [loading, setLoading] = useState(true); 
+    const [loading, setLoading] = useState(true);
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
     const [attractions, setAttractions] = useState<Attraction[]>([]);
     const [filteredAttractions, setFilteredAttractions] = useState<Attraction[]>([]);
@@ -66,7 +71,7 @@ const Municipalidad: React.FC<Props> = ({ attraction }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [contactos, setContactos] = useState<{ contact_value: string; contact_type: string }[]>([]);
     const [contact_value, setValor] = useState('');
-    const [contact_type, setTipo] = useState('phone'); 
+    const [contact_type, setTipo] = useState('phone');
 
     const fetchAttractions = async () => {
         try {
@@ -89,7 +94,7 @@ const Municipalidad: React.FC<Props> = ({ attraction }) => {
     };
 
     useEffect(() => {
-        AOS.init(); 
+        AOS.init();
         fetchAttractions();
     }, []);
 
@@ -216,45 +221,39 @@ const Municipalidad: React.FC<Props> = ({ attraction }) => {
                                             <Typography variant="body2" color="text.secondary">
                                                 <strong>Accesibilidad:</strong> {attraction.accessibility || 'No especificados'}
                                             </Typography>
-                                        </Box>                   
+                                        </Box>
 
                                         <Box mt={2}>
-                                            {attraction.website && (
-                                                <Button
-                                                    variant="outlined"
+                                            <Tooltip title="Ver en Google Maps">
+                                                <Button                                  
                                                     color="primary"
-                                                    startIcon={<DirectionsIcon />}
+                                                    href={getGoogleMapsUrl(attraction.latitude, attraction.longitude)}
+                                                    target="_blank"
+                                                    sx={{ mr: 1 }}
+                                                >
+                                                    <RoomIcon />
+                                                </Button>
+                                            </Tooltip>
+                                            <Tooltip title="Ver en Waze">
+                                                <Button        
+                                                    color="secondary"
+                                                    href={getWazeUrl(attraction.latitude, attraction.longitude)}
+                                                    target="_blank"
+                                                >
+                                                    <IconBrandWaze />
+                                                </Button>
+                                            </Tooltip>
+                                            <Tooltip title="Explorar su website">
+                                                <Button      
+                                                    color="primary"
                                                     href={attraction.website}
                                                     target="_blank"
                                                     sx={{ mr: 1 }}
                                                 >
-                                                    Visitar Sitio Web
-
+                                                    <TravelExploreIcon />
                                                 </Button>
-
-                                            )}
-                                            <br></br>
-                                            <br></br>
-                                            <Button
-                                                variant="outlined"
-                                                color="primary"
-                                                startIcon={<DirectionsIcon />}
-                                                href={getGoogleMapsUrl(attraction.latitude, attraction.longitude)}
-                                                target="_blank"
-                                                sx={{ mr: 1 }}
-                                            >
-                                                Ver en Google Maps
-                                            </Button>
-                                            <Button
-                                                variant="outlined"
-                                                color="secondary"
-                                                startIcon={<DirectionsIcon />}
-                                                href={getWazeUrl(attraction.latitude, attraction.longitude)}
-                                                target="_blank"
-                                            >
-                                                Ver en Waze
-                                            </Button>
-                                        </Box>                
+                                            </Tooltip>
+                                        </Box>
                                     </CardContent>
                                 </Card>
                             </Grid>

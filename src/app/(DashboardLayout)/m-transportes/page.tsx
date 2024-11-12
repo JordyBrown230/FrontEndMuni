@@ -11,6 +11,9 @@ import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { toast, Toaster } from 'react-hot-toast';
 
+import TravelExploreIcon from '@mui/icons-material/TravelExplore';
+import { Tooltip } from '@mui/material';
+
 // Interfaz de la información de transporte
 interface TransportInfo {
     id: number;
@@ -250,16 +253,16 @@ const Municipalidad = () => {
                                         )}
                                         {info.website && (
                                             <Box mt={2}>
-                                                <Button
+                                                <Tooltip title="Explorar su website">
+                                                <Button      
                                                     component={Link}
                                                     href={info.website}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    variant="outlined"
-                                                    startIcon={<LaunchIcon />}
                                                 >
-                                                    Sitio Web
+                                                    <TravelExploreIcon />
                                                 </Button>
+                                            </Tooltip>
                                             </Box>
                                         )}
                                     </CardContent>
