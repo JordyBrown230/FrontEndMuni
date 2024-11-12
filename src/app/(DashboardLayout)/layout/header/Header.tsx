@@ -28,7 +28,6 @@ const Header = ({ toggleMobileSidebar }: ItemType) => {
   return (
     <AppBarStyled position="sticky" color="default">
       <ToolbarStyled>
-      <Visitantes></Visitantes>
         <IconButton
           color="inherit"
           aria-label="menu"
@@ -59,6 +58,7 @@ const Header = ({ toggleMobileSidebar }: ItemType) => {
             <IconBellRinging size="31" stroke="1.5" />
           </Badge>
         </IconButton>
+        <Visitantes></Visitantes>
       </ToolbarStyled>
     </AppBarStyled>
   );

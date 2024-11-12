@@ -13,6 +13,7 @@ import {
   IconAlertOctagon,
   IconBone,
   IconPlane,
+  IconCalendarEvent,
 } from "@tabler/icons-react";
 
 import { uniqueId } from "lodash";
@@ -92,6 +93,12 @@ const Menuitems = [
     title: "Servicios seguridad",
     icon: IconShieldCheck, 
     href: "/servicios-seguridad",
+  },
+  {
+    id: uniqueId(),
+    title: "Eventos Tours",
+    icon: IconCalendarEvent, 
+    href: "/eventos-tours",
   },
 ];
 
