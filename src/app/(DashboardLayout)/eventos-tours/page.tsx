@@ -1,11 +1,25 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Card, CardContent, Typography, Grid, Box, CircularProgress, IconButton, Modal, Button, Collapse, Tooltip } from '@mui/material';
+import {
+    Card,
+    CardContent,
+    Typography,
+    Grid,
+    Box,
+    CircularProgress,
+    IconButton,
+    Modal,
+    Button,
+    Collapse,
+    Tooltip,
+} from '@mui/material';
 import { getEventosTours, EventoTour } from '@/services/eventotour.service';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { styled } from '@mui/system';
 import RoomIcon from '@mui/icons-material/Room';
 import { IconBrandWaze } from '@tabler/icons-react';
@@ -28,15 +42,17 @@ const EventosToursList = () => {
     const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
     const [modalOpen, setModalOpen] = useState(false);
     const [currentEvento, setCurrentEvento] = useState<EventoTour | null>(null);
+    const [imageIndex, setImageIndex] = useState<number[]>([]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const data = await getEventosTours();
                 setEventosTours(data);
+                setImageIndex(data.map(() => 0)); // Inicializa el índice de cada evento en 0
                 setLoading(false);
             } catch (error) {
-                console.error("Error fetching eventos/tours:", error);
+                console.error('Error fetching eventos/tours:', error);
                 setLoading(false);
             }
         };
@@ -48,14 +64,45 @@ const EventosToursList = () => {
         setExpandedIndex(expandedIndex === index ? null : index);
     };
 
-    const openImageModal = (evento: EventoTour) => {
+    const handlePreviousImageCard = (index: number) => {
+        setImageIndex((prevIndices) => {
+            const newIndices = [...prevIndices];
+            newIndices[index] = Math.max(0, newIndices[index] - 1);
+            return newIndices;
+        });
+    };
+
+    const handleNextImageCard = (index: number, totalFotos: number) => {
+        setImageIndex((prevIndices) => {
+            const newIndices = [...prevIndices];
+            newIndices[index] = Math.min(totalFotos - 1, newIndices[index] + 1);
+            return newIndices;
+        });
+    };
+
+    const openImageModal = (evento: EventoTour, index: number) => {
         setCurrentEvento(evento);
+        setImageIndex([index]);
         setModalOpen(true);
     };
 
     const closeModal = () => {
         setModalOpen(false);
         setCurrentEvento(null);
+    };
+
+    const handlePreviousImageModal = () => {
+        setImageIndex((prevIndices) => {
+            const newIndex = Math.max(0, prevIndices[0] - 1);
+            return [newIndex];
+        });
+    };
+
+    const handleNextImageModal = (totalFotos: number) => {
+        setImageIndex((prevIndices) => {
+            const newIndex = Math.min(totalFotos - 1, prevIndices[0] + 1);
+            return [newIndex];
+        });
     };
 
     if (loading) {
@@ -77,21 +124,38 @@ const EventosToursList = () => {
                     <Grid item xs={12} sm={6} md={4} key={evento.idEventoTour}>
                         <CustomCard>
                             <Box sx={{ position: 'relative', overflow: 'hidden', height: 200 }}>
-                                {evento.fotosEventoTour && evento.fotosEventoTour.length > 0 ? (
-                                    <img
-                                        src={`data:image/jpeg;base64,${Buffer.from(evento.fotosEventoTour[0].foto).toString('base64')}`}
-                                        alt="Evento o Tour"
-                                        style={{ width: '100%', height: '100%', objectFit: 'cover', cursor: 'pointer' }}
-                                        onClick={() => openImageModal(evento)}
-                                    />
+                                {evento.fotosEventoTour.length > 0 ? (
+                                    <>
+                                        <img
+                                            src={evento.fotosEventoTour[imageIndex[idx]]?.url || ''}
+                                            alt="Evento o Tour"
+                                            style={{ width: '100%', height: '100%', objectFit: 'cover', cursor: 'pointer' }}
+                                            onClick={() => openImageModal(evento, imageIndex[idx])}
+                                        />
+                                        <IconButton
+                                            sx={{ position: 'absolute', top: '50%', left: 5, transform: 'translateY(-50%)', zIndex: 2 }}
+                                            onClick={() => handlePreviousImageCard(idx)}
+                                            disabled={imageIndex[idx] <= 0}
+                                        >
+                                            <ArrowBackIosIcon />
+                                        </IconButton>
+                                        <IconButton
+                                            sx={{ position: 'absolute', top: '50%', right: 5, transform: 'translateY(-50%)', zIndex: 2 }}
+                                            onClick={() => handleNextImageCard(idx, evento.fotosEventoTour.length)}
+                                            disabled={imageIndex[idx] >= evento.fotosEventoTour.length - 1}
+                                        >
+                                            <ArrowForwardIosIcon />
+                                        </IconButton>
+                                    </>
                                 ) : (
-                                    <Box sx={{
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        backgroundColor: '#e0e0e0',
-                                        height: '100%',
-                                    }}
+                                    <Box
+                                        sx={{
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            backgroundColor: '#e0e0e0',
+                                            height: '100%',
+                                        }}
                                     >
                                         <Typography variant="body2" color="textSecondary">
                                             No hay fotos disponibles
@@ -104,7 +168,7 @@ const EventosToursList = () => {
                                     {evento.nombre}
                                 </Typography>
                                 <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
-                                    {evento.descripcion ? evento.descripcion : 'Descripción no disponible.'}
+                                    {evento.descripcion || 'Descripción no disponible.'}
                                 </Typography>
                                 <Box display="flex" justifyContent="flex-end" mt={2}>
                                     <Button
@@ -112,7 +176,7 @@ const EventosToursList = () => {
                                         onClick={() => handleExpandClick(idx)}
                                         endIcon={expandedIndex === idx ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                                     >
-                                        {expandedIndex === idx ? "Ver Menos" : "Ver Más"}
+                                        {expandedIndex === idx ? 'Ver Menos' : 'Ver Más'}
                                     </Button>
                                 </Box>
 
@@ -138,7 +202,17 @@ const EventosToursList = () => {
                                     )}
                                     {evento.precio && (
                                         <Typography variant="body1" mt={1}>
-                                            Precio: ${Number(evento.precio).toFixed(2)}
+                                            Precio: {evento.precio}
+                                        </Typography>
+                                    )}
+                                    {evento.puntoEncuentro && (
+                                        <Typography variant="body1" mt={1}>
+                                            Punto de encuentro: {evento.puntoEncuentro}
+                                        </Typography>
+                                    )}
+                                    {evento.organizador && (
+                                        <Typography variant="body1" mt={1}>
+                                            Organizador: {evento.organizador}
                                         </Typography>
                                     )}
                                     {evento.capacidadMaxima && (
@@ -146,11 +220,25 @@ const EventosToursList = () => {
                                             Capacidad Máxima: {evento.capacidadMaxima}
                                         </Typography>
                                     )}
-                                    <Typography variant="body1" mt={1}>
-                                        Organizador: {evento.organizador || 'No especificado'}
-                                    </Typography>
-                                </Collapse>
 
+                                    {evento.tipoActividad && (
+                                        <Typography variant="body1" mt={1}>
+                                            Tipo de Actividad: {evento.tipoActividad}
+                                        </Typography>
+                                    )}
+
+                                    {evento.requerimientosEspeciales && (
+                                        <Typography variant="body1" mt={1}>
+                                            Requerimientos Especiales: {evento.requerimientosEspeciales}
+                                        </Typography>
+                                    )}
+
+                                    {evento.duracionEstimada && (
+                                        <Typography variant="body1" mt={1}>
+                                            Duración Estimada: {evento.duracionEstimada}
+                                        </Typography>
+                                    )}
+                                </Collapse>
                                 <Box display="flex" gap={1} mt={2}>
                                     {evento.urlGoogleMaps && (
                                         <Tooltip title="Ver en Google Maps">
@@ -165,7 +253,7 @@ const EventosToursList = () => {
                                             </IconButton>
                                         </Tooltip>
                                     )}
-                                    {evento && (
+                                    {evento.urlWaze && (
                                         <Tooltip title="Ver en Waze">
                                             <IconButton
                                                 color="primary"
@@ -178,7 +266,7 @@ const EventosToursList = () => {
                                             </IconButton>
                                         </Tooltip>
                                     )}
-
+                                    {evento.website && (
                                     <Tooltip title="Explorar su website">
                                         <IconButton
                                             color="primary"
@@ -188,6 +276,7 @@ const EventosToursList = () => {
                                             <TravelExploreIcon />
                                         </IconButton>
                                     </Tooltip>
+                                    )}
                                 </Box>
                             </CardContent>
                         </CustomCard>
@@ -196,33 +285,52 @@ const EventosToursList = () => {
             </Grid>
 
             <Modal open={modalOpen} onClose={closeModal}>
-                <Box sx={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    bgcolor: 'background.paper',
-                    borderRadius: '8px',
-                    boxShadow: 24,
-                    p: 2,
-                    width: '80%',
-                    maxWidth: '600px',
-                    textAlign: 'center',
-                }}
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        bgcolor: 'background.paper',
+                        borderRadius: '8px',
+                        boxShadow: 24,
+                        p: 2,
+                        width: '80%',
+                        maxWidth: '600px',
+                        textAlign: 'center',
+                    }}
                 >
-                    {currentEvento && currentEvento.fotosEventoTour && currentEvento.fotosEventoTour.length > 0 && (
-                        <img
-                            src={`data:image/jpeg;base64,${Buffer.from(currentEvento.fotosEventoTour[0].foto).toString('base64')}`}
-                            alt="Evento o Tour grande"
-                            style={{ width: '100%', height: 'auto', borderRadius: '8px', objectFit: 'cover' }}
-                        />
+                    {currentEvento && currentEvento.fotosEventoTour.length > 0 && (
+                        <>
+                            <Box position="relative">
+                                <IconButton
+                                    sx={{ position: 'absolute', left: 10, zIndex: 10, top: '45%' }}
+                                    onClick={handlePreviousImageModal}
+                                    disabled={imageIndex[0] <= 0}
+                                >
+                                    <ArrowBackIosIcon />
+                                </IconButton>
+                                <img
+                                    src={currentEvento.fotosEventoTour[imageIndex[0]]?.url || ''}
+                                    alt="Evento o Tour grande"
+                                    style={{ width: '100%', height: 'auto', borderRadius: '8px', objectFit: 'cover' }}
+                                />
+                                <IconButton
+                                    sx={{ position: 'absolute', right: 10, zIndex: 10, top: '45%' }}
+                                    onClick={() => handleNextImageModal(currentEvento.fotosEventoTour.length)}
+                                    disabled={imageIndex[0] >= currentEvento.fotosEventoTour.length - 1}
+                                >
+                                    <ArrowForwardIosIcon />
+                                </IconButton>
+                            </Box>
+                            <IconButton
+                                sx={{ position: 'absolute', top: 10, right: 10 }}
+                                onClick={closeModal}
+                            >
+                                <CloseIcon />
+                            </IconButton>
+                        </>
                     )}
-                    <IconButton
-                        sx={{ position: 'absolute', top: 10, right: 10 }}
-                        onClick={closeModal}
-                    >
-                        <CloseIcon />
-                    </IconButton>
                 </Box>
             </Modal>
         </Box>
