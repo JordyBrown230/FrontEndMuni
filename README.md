@@ -57,13 +57,13 @@ El proyecto consta de **dos repositorios de frontend** desarrollados con React y
 
 1. Clonar los repositorios:
    ```bash
-   # Repositorio Frontend 1
-   git clone <url-del-repositorio-1>
+   # Repositorio Frontend Interno
+   git clone https://github.com/JordyBrown230/FrontEndInternoLaCruz.git
    cd <nombre-del-proyecto-1>
    npm install
 
-   # Repositorio Frontend 2
-   git clone <url-del-repositorio-2>
+   # Repositorio Frontend externo o para usuarios finales
+   git clone https://github.com/JordyBrown230/FrontEndMuni.git
    cd <nombre-del-proyecto-2>
    npm install
    ```
