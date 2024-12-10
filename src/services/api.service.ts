@@ -1,7 +1,7 @@
 import axios from "axios";
 
-export const localServer='http://localhost:3005/';
-export const localhost = 'http://localhost:3005/muni';
+export const localServer='http://localhost:9000/';
+export const localhost = 'http://localhost:9000/sit';
 // export const hostedUrl = ''
 
 const axiosApi = axios.create({   

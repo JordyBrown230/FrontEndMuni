@@ -1,7 +1,19 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { Card, CardContent, Typography, Grid, Box, CircularProgress, IconButton, Modal, Button, Collapse } from '@mui/material';
+import {
+  Card,
+  CardContent,
+  Typography,
+  Grid,
+  Box,
+  CircularProgress,
+  IconButton,
+  Modal,
+  Button,
+  Collapse,
+  Tooltip,
+} from '@mui/material';
 import { getEstablecimientos, Establecimiento } from '../../../services/establecimiento.service';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -10,7 +22,6 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { styled } from '@mui/system';
 import TravelExploreIcon from '@mui/icons-material/TravelExplore';
-import { Tooltip } from '@mui/material';
 import { IconBrandWaze } from '@tabler/icons-react';
 import RoomIcon from '@mui/icons-material/Room';
 
@@ -41,7 +52,7 @@ const EstablecimientosList = () => {
         setImageIndex(data.map(() => 0)); // Inicializa el índice de cada card a 0
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching establecimientos:", error);
+        console.error('Error fetching establecimientos:', error);
         setLoading(false);
       }
     };
@@ -120,9 +131,7 @@ const EstablecimientosList = () => {
                 {establecimiento.fotosEstablecimiento && establecimiento.fotosEstablecimiento.length > 0 ? (
                   <>
                     <img
-                      src={`data:image/jpeg;base64,${Buffer.from(
-                        establecimiento.fotosEstablecimiento[imageIndex[idx] || 0].foto
-                      ).toString('base64')}`}
+                      src={establecimiento.fotosEstablecimiento[imageIndex[idx] || 0].url}
                       alt="Establecimiento"
                       style={{ width: '100%', height: '100%', objectFit: 'cover', cursor: 'pointer' }}
                       onClick={() => openImageModal(establecimiento, imageIndex[idx] || 0)}
@@ -163,6 +172,12 @@ const EstablecimientosList = () => {
                 <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
                   {establecimiento.descripcion ? establecimiento.descripcion : 'Descripción no disponible.'}
                 </Typography>
+                <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
+                 Dirección: {establecimiento.direccion ? establecimiento.direccion : 'Dirección no disponible.'}
+                </Typography>
+                <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
+                 Teléfono: {establecimiento ? establecimiento.telefono: 'Teléfono no disponible.'}
+                </Typography>
                 <Typography variant="body2" color="primary" sx={{ fontWeight: 'medium' }}>
                   Categoría: {establecimiento.categoria?.nombre || 'Sin categoría asignada'}
                 </Typography>
@@ -173,14 +188,11 @@ const EstablecimientosList = () => {
                     onClick={() => handleExpandClick(idx)}
                     endIcon={expandedIndex === idx ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                   >
-                    {expandedIndex === idx ? "Ver Menos" : "Ver Más"}
+                    {expandedIndex === idx ? 'Ver Menos' : 'Ver Más'}
                   </Button>
                 </Box>
 
                 <Collapse in={expandedIndex === idx} timeout="auto" unmountOnExit>
-                  <Typography variant="body1" mt={2}>
-                    Dirección: {establecimiento.direccion}
-                  </Typography>
                   <Typography variant="body1" mt={1}>
                     Propietario: {establecimiento.propietario?.nombre || 'Sin propietario asignado'}
                   </Typography>
@@ -222,6 +234,7 @@ const EstablecimientosList = () => {
                   )}
 
                   {/* Icono de Exploración */}
+                  {establecimiento.website&&(
                   <Tooltip title="Explorar su website">
                     <IconButton
                       color="primary"
@@ -231,15 +244,14 @@ const EstablecimientosList = () => {
                       <TravelExploreIcon />
                     </IconButton>
                   </Tooltip>
+                  )}
                 </Box>
-
               </CardContent>
             </CustomCard>
           </Grid>
         ))}
       </Grid>
 
-      {/* Modal para mostrar imágenes en grande con navegación */}
       <Modal open={modalOpen} onClose={closeModal}>
         <Box
           sx={{
@@ -266,9 +278,7 @@ const EstablecimientosList = () => {
                   <ArrowBackIosIcon />
                 </IconButton>
                 <img
-                  src={`data:image/jpeg;base64,${Buffer.from(
-                    currentEstablecimiento.fotosEstablecimiento[imageIndex[0]].foto
-                  ).toString('base64')}`}
+                  src={currentEstablecimiento.fotosEstablecimiento[imageIndex[0]].url}
                   alt="Establecimiento grande"
                   style={{ width: '100%', height: 'auto', borderRadius: '8px', objectFit: 'cover' }}
                 />
