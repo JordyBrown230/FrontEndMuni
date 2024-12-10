@@ -1,11 +1,25 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Card, CardContent, Typography, Grid, Box, CircularProgress, IconButton, Modal, Button, Collapse, Tooltip } from '@mui/material';
+import {
+    Card,
+    CardContent,
+    Typography,
+    Grid,
+    Box,
+    CircularProgress,
+    IconButton,
+    Modal,
+    Button,
+    Collapse,
+    Tooltip,
+} from '@mui/material';
 import { getServiciosSeguridad, ServiciosSeguridad } from '@/services/serviciosseguridad.service';
 import CloseIcon from '@mui/icons-material/Close';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { styled } from '@mui/system';
 import RoomIcon from '@mui/icons-material/Room';
 import { IconBrandWaze } from '@tabler/icons-react';
@@ -28,15 +42,17 @@ const ServiciosSeguridadList = () => {
     const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
     const [modalOpen, setModalOpen] = useState(false);
     const [currentServicio, setCurrentServicio] = useState<ServiciosSeguridad | null>(null);
+    const [imageIndex, setImageIndex] = useState<number[]>([]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const data = await getServiciosSeguridad();
                 setServiciosSeguridad(data);
+                setImageIndex(data.map(() => 0)); // Inicializa el índice de cada servicio en 0
                 setLoading(false);
             } catch (error) {
-                console.error("Error fetching servicios de seguridad:", error);
+                console.error('Error fetching servicios de seguridad:', error);
                 setLoading(false);
             }
         };
@@ -48,14 +64,49 @@ const ServiciosSeguridadList = () => {
         setExpandedIndex(expandedIndex === index ? null : index);
     };
 
-    const openImageModal = (servicio: ServiciosSeguridad) => {
+    const handlePreviousImageCard = (index: number) => {
+        setImageIndex((prevIndices) => {
+            const newIndices = [...prevIndices];
+            newIndices[index] = newIndices[index] > 0 ? newIndices[index] - 1 : newIndices[index];
+            return newIndices;
+        });
+    };
+
+    const handleNextImageCard = (index: number, totalFotos: number) => {
+        setImageIndex((prevIndices) => {
+            const newIndices = [...prevIndices];
+            newIndices[index] = newIndices[index] < totalFotos - 1 ? newIndices[index] + 1 : newIndices[index];
+            return newIndices;
+        });
+    };
+
+    const openImageModal = (servicio: ServiciosSeguridad, index: number) => {
         setCurrentServicio(servicio);
+        setImageIndex([index]);
         setModalOpen(true);
     };
 
     const closeModal = () => {
         setModalOpen(false);
         setCurrentServicio(null);
+    };
+
+    const handlePreviousImageModal = () => {
+        if (currentServicio && currentServicio.fotosServicio.length > 0) {
+            setImageIndex((prevIndices) => {
+                const newIndex = prevIndices[0] > 0 ? prevIndices[0] - 1 : prevIndices[0];
+                return [newIndex];
+            });
+        }
+    };
+
+    const handleNextImageModal = (totalFotos: number) => {
+        if (currentServicio && currentServicio.fotosServicio.length > 0) {
+            setImageIndex((prevIndices) => {
+                const newIndex = prevIndices[0] < totalFotos - 1 ? prevIndices[0] + 1 : prevIndices[0];
+                return [newIndex];
+            });
+        }
     };
 
     if (loading) {
@@ -77,13 +128,44 @@ const ServiciosSeguridadList = () => {
                     <Grid item xs={12} sm={6} md={4} key={servicio.idServicioSeguridad}>
                         <CustomCard>
                             <Box sx={{ position: 'relative', overflow: 'hidden', height: 200 }}>
-                                {servicio.foto ? (
-                                    <img
-                                        src={`data:image/jpeg;base64,${Buffer.from(servicio.foto).toString('base64')}`}
-                                        alt="Servicio de Seguridad"
-                                        style={{ width: '100%', height: '100%', objectFit: 'cover', cursor: 'pointer' }}
-                                        onClick={() => openImageModal(servicio)}
-                                    />
+                                {servicio.fotosServicio && servicio.fotosServicio.length > 0 ? (
+                                    <>
+                                        <img
+                                            src={servicio.fotosServicio[imageIndex[idx] || 0]?.url || ''}
+                                            alt="Servicio de Seguridad"
+                                            style={{
+                                                width: '100%',
+                                                height: '100%',
+                                                objectFit: 'cover',
+                                                cursor: 'pointer',
+                                            }}
+                                            onClick={() => openImageModal(servicio, imageIndex[idx] || 0)}
+                                        />
+                                        <IconButton
+                                            sx={{
+                                                position: 'absolute',
+                                                top: '50%',
+                                                left: 5,
+                                                transform: 'translateY(-50%)',
+                                                zIndex: 2,
+                                            }}
+                                            onClick={() => handlePreviousImageCard(idx)}
+                                        >
+                                            <ArrowBackIosIcon />
+                                        </IconButton>
+                                        <IconButton
+                                            sx={{
+                                                position: 'absolute',
+                                                top: '50%',
+                                                right: 5,
+                                                transform: 'translateY(-50%)',
+                                                zIndex: 2,
+                                            }}
+                                            onClick={() => handleNextImageCard(idx, servicio.fotosServicio.length)}
+                                        >
+                                            <ArrowForwardIosIcon />
+                                        </IconButton>
+                                    </>
                                 ) : (
                                     <Box
                                         sx={{
@@ -105,21 +187,22 @@ const ServiciosSeguridadList = () => {
                                     {servicio.nombre}
                                 </Typography>
                                 <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
-                                    {servicio.descripcion ? servicio.descripcion : 'Descripción no disponible.'}
+                                    {servicio.descripcion || 'Descripción no disponible.'}
                                 </Typography>
                                 <Box display="flex" justifyContent="flex-end" mt={2}>
                                     <Button
                                         variant="outlined"
                                         onClick={() => handleExpandClick(idx)}
-                                        endIcon={expandedIndex === idx ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                                        endIcon={
+                                            expandedIndex === idx ? <ExpandLessIcon /> : <ExpandMoreIcon />
+                                        }
                                     >
-                                        {expandedIndex === idx ? "Ver Menos" : "Ver Más"}
+                                        {expandedIndex === idx ? 'Ver Menos' : 'Ver Más'}
                                     </Button>
                                 </Box>
-
                                 <Collapse in={expandedIndex === idx} timeout="auto" unmountOnExit>
                                     <Typography variant="body1" mt={2}>
-                                        Dirección: {servicio.direccion}
+                                        Dirección: {servicio.direccion || 'No disponible'}
                                     </Typography>
                                     <Typography variant="body1" mt={1}>
                                         Teléfono: {servicio.telefono || 'N/A'}
@@ -162,6 +245,8 @@ const ServiciosSeguridadList = () => {
                                                 color="primary"
                                                 component="a"
                                                 href={servicio.website}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
                                             >
                                                 <TravelExploreIcon />
                                             </IconButton>
@@ -190,19 +275,42 @@ const ServiciosSeguridadList = () => {
                         textAlign: 'center',
                     }}
                 >
-                    {currentServicio && currentServicio.foto && (
-                        <img
-                            src={`data:image/jpeg;base64,${Buffer.from(currentServicio.foto).toString('base64')}`}
-                            alt="Servicio de Seguridad grande"
-                            style={{ width: '100%', height: 'auto', borderRadius: '8px', objectFit: 'cover' }}
-                        />
+                    {currentServicio && currentServicio.fotosServicio && currentServicio.fotosServicio.length > 0 && (
+                        <>
+                            <Box position="relative">
+                                <IconButton
+                                    sx={{ position: 'absolute', left: 10, zIndex: 10, top: '45%' }}
+                                    onClick={handlePreviousImageModal}
+                                    disabled={imageIndex[0] <= 0}
+                                >
+                                    <ArrowBackIosIcon />
+                                </IconButton>
+                                <img
+                                    src={currentServicio.fotosServicio[imageIndex[0]]?.url || ''}
+                                    alt="Servicio de Seguridad grande"
+                                    style={{
+                                        width: '100%',
+                                        height: 'auto',
+                                        borderRadius: '8px',
+                                        objectFit: 'cover',
+                                    }}
+                                />
+                                <IconButton
+                                    sx={{ position: 'absolute', right: 10, zIndex: 10, top: '45%' }}
+                                    onClick={() => handleNextImageModal(currentServicio.fotosServicio.length)}
+                                    disabled={imageIndex[0] >= currentServicio.fotosServicio.length - 1}
+                                >
+                                    <ArrowForwardIosIcon />
+                                </IconButton>
+                            </Box>
+                            <IconButton
+                                sx={{ position: 'absolute', top: 10, right: 10 }}
+                                onClick={closeModal}
+                            >
+                                <CloseIcon />
+                            </IconButton>
+                        </>
                     )}
-                    <IconButton
-                        sx={{ position: 'absolute', top: 10, right: 10 }}
-                        onClick={closeModal}
-                    >
-                        <CloseIcon />
-                    </IconButton>
                 </Box>
             </Modal>
         </Box>
